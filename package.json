@@ -1,0 +1,25 @@
+{
+  "name": "PBL_demo_miniapp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "uni",
+    "build": "uni build --mode prod -p app && node ./scripts/wgt_build.js",
+    "build:dev": "uni build --mode dev -p app && node ./scripts/wgt_build.js dev",
+    "serve": "npm start"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-3070920230324001",
+    "@dcloudio/uni-app-plus": "3.0.0-3070920230324001",
+    "@dcloudio/uni-components": "3.0.0-3070920230324001",
+    "@dcloudio/uni-h5": "3.0.0-3070920230324001",
+    "uni-ajax": "2.4.4",
+    "vue": "3.2.47"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "3.3.2",
+    "@dcloudio/vite-plugin-uni": "3.0.0-3070920230324001",
+    "adm-zip": "0.5.10",
+    "vite": "4.2.1"
+  }
+}

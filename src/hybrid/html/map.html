@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>demo route app</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        #navbar {
+            background-color: green;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        #navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-style: italic;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        #map {
+            height: 60vh;
+            width: 100%;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            #navbar a {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+
+        #green-container {
+            background-color: green;
+            width: 100%;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #center-button {
+            background-color: white;
+            border-radius: 50%;
+            padding: 20px 40px;
+            text-align: center;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <a href="map.html">経路表示アプリケーション</a>
+    </nav>
+    <div id="map"></div>
+    <div id="green-container">
+        <button id="center-button" onclick="linkCheck()">船橋日大前駅へ</button>
+    </div>
+    <div id="panel"></div>
+
+    <script type="text/javascript">
+        var map;
+        function initMap() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        var mapLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        var mapOptions = {
+                            zoom: 15,
+                            center: mapLatLng,
+                            mapTypeControl: false,
+                            fullscreenControl: false,
+                            streetViewControl: false,
+                            zoomControl: false,
+                            gestureHandling: 'greedy'
+                        };
+                        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                        
+                        var mk0 = new google.maps.Marker({
+                            map: map,
+                            position: mapLatLng
+                        });
+
+                        const station = { lat: 35.7269,lng: 140.0588 }
+                        var mk1 = new google.maps.Marker({
+                            position: station,
+                            map: map
+                        });
+
+                        var contentString = "<p>船橋日大前駅</p>";
+                        var infowindow = new google.maps.InfoWindow({
+                            content: contentString,
+                        });
+
+                        google.maps.event.addListener(mk1, 'click', function() {
+                            infowindow.open(map, mk1);
+                        });
+
+                        const directionsService = new google.maps.DirectionsService();
+                        const directionsRenderer = new google.maps.DirectionsRenderer({
+                            draggable: true,
+                            map,
+                            panel: document.getElementById("panel"),
+                        });
+
+                        directionsRenderer.setMap(map);
+
+                        const route = {
+                            origin: mapLatLng,
+                            destination: station,
+                        }
+
+                        directionsService.route(route, function(response, status) {
+                            if (status === 'OK') {
+                                var directionsData = response.routes[0].legs[0];
+                                if (directionsData) {
+                                    addDistanceRow("船橋日大前駅", directionsData.distance.text, directionsData.duration.text, "route.html");
+                                } else {
+                                    window.alert('Directions request failed');
+                                }
+                            } else {
+                                window.alert('Directions request failed due to ' + status);
+                            }
+                        });
+                    },
+                    function(error) {
+                        alert("エラーが発生しました。");
+                    }
+                );
+            } else {
+                alert("この端末では位置情報が取得できません");
+            }
+        }
+
+        function linkCheck() {
+            const link = "船橋日大前駅";
+            const href = "route.html";
+            const ret = confirm(link + "までのルートを表示します。");
+            if (ret) {
+                location.href = href;
+            }
+        }
+
+        var script = document.createElement('script');
+        document.head.appendChild(script);
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARp7fzszR_93coxgO_YKMHUzgWH-68G-o&callback=initMap"></script>
+</body>
+</html>

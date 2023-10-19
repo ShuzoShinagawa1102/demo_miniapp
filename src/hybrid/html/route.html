@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>demo route app</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        #navbar {
+            background-color: green;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            top: 0;
+        }
+
+        #navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-style: italic;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            #navbar a {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+
+        #map {
+            height: 60vh;
+            width: 100%;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+  <nav id="navbar">
+    <a href="map.html">戻る</a>
+  </nav>
+  <div id="map"></div>  
+  <div id="panel"></div> 
+
+  <script type="text/javascript">
+    let map;
+
+    function initMap() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const mapLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    const mapOptions = {
+                        zoom: 15,
+                        center: mapLatLng,
+                        mapTypeControl: false,
+                        fullscreenControl: false,
+                        streetViewControl: false,
+                        zoomControl: false,
+                        gestureHandling: 'greedy'
+                    };
+                    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                    new google.maps.Marker({
+                        map: map,
+                        position: mapLatLng
+                    });
+
+                    const station = { lat: 35.7269, lng: 140.0588 };
+                    new google.maps.Marker({
+                        position: station,
+                        map: map
+                    });
+
+                    const directionsService = new google.maps.DirectionsService();
+                    const directionsRenderer = new google.maps.DirectionsRenderer({
+                        draggable: true,
+                        map,
+                        panel: document.getElementById("panel"),
+                    });
+                    directionsRenderer.setMap(map);
+
+                    const route = {
+                        origin: mapLatLng,
+                        destination: station,
+                        travelMode: 'WALKING'
+                    };
+
+                    directionsService.route(route,
+                        function(response, status) {
+                            if (status === 'OK') {
+                                directionsRenderer.setDirections(response);
+                            } else {
+                                window.alert('Directions request failed due to ' + status);
+                            }
+                        }
+                    );
+                },
+                function() {
+                    alert("エラーが発生しました。");
+                }
+            );
+        } else {
+            alert("この端末では位置情報が取得できません");
+        }
+    }
+  </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARp7fzszR_93coxgO_YKMHUzgWH-68G-o&callback=initMap"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "pages": [
+    {
+      "path": "pages/home/home",
+      "style": {
+        "navigationBarTitleText": "MINI_APP_TEMPLATE"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "MINI_APP_TEMPLATE",
+    "navigationBarBackgroundColor": "#D48831",
+    "backgroundColor": "#F8F8F8"
+  }
+}
